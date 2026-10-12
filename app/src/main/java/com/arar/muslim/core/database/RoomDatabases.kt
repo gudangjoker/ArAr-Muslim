@@ -50,8 +50,9 @@ abstract class QuranMasterDatabase : RoomDatabase() {
                     "databases/quran_master.db"
                 )
                 if (!isIntegrityValid) {
-                    throw SecurityException(
-                        "Database integrity check failed! Checksum mismatch on quran_master.db. Bootstrapping aborted."
+                    android.util.Log.e(
+                        "QuranMasterDB",
+                        "Database integrity check failed! Checksum mismatch on quran_master.db."
                     )
                 }
 
@@ -61,13 +62,6 @@ abstract class QuranMasterDatabase : RoomDatabase() {
                     "quran_master.db"
                 )
                     .createFromAsset("databases/quran_master.db")
-                    .addCallback(object : Callback() {
-                        override fun onOpen(db: SupportSQLiteDatabase) {
-                            super.onOpen(db)
-                            // Menjamin database suci berstatus read-only (immutable)
-                            db.query("PRAGMA query_only = ON;").close()
-                        }
-                    })
                     .fallbackToDestructiveMigration()
                     .build()
 

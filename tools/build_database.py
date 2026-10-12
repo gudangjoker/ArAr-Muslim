@@ -330,90 +330,96 @@ def build_database():
 
     # 1. TABEL SURAH
     cur.execute("""
-    CREATE TABLE surah (
-        id INTEGER PRIMARY KEY,
-        number INTEGER NOT NULL UNIQUE,
-        name_arabic TEXT NOT NULL,
-        name_latin TEXT NOT NULL,
-        name_translation TEXT NOT NULL,
-        revelation_type TEXT NOT NULL,
-        total_ayah INTEGER NOT NULL,
-        page_number INTEGER NOT NULL
+    CREATE TABLE IF NOT EXISTS `surah` (
+        `id` INTEGER NOT NULL,
+        `number` INTEGER NOT NULL,
+        `name_arabic` TEXT NOT NULL,
+        `name_latin` TEXT NOT NULL,
+        `name_translation` TEXT NOT NULL,
+        `revelation_type` TEXT NOT NULL,
+        `total_ayah` INTEGER NOT NULL,
+        `page_number` INTEGER NOT NULL,
+        PRIMARY KEY(`id`)
     );
     """)
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS `index_surah_number` ON `surah` (`number`);")
 
     # 2. TABEL AYAT
     cur.execute("""
-    CREATE TABLE ayah (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        surah_id INTEGER NOT NULL,
-        ayah_number INTEGER NOT NULL,
-        text_uthmani TEXT NOT NULL,
-        translation_id TEXT NOT NULL,
-        juz INTEGER NOT NULL,
-        page INTEGER NOT NULL,
-        manzil INTEGER NOT NULL,
-        sajdah INTEGER NOT NULL DEFAULT 0,
-        FOREIGN KEY(surah_id) REFERENCES surah(id)
+    CREATE TABLE IF NOT EXISTS `ayah` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `surah_id` INTEGER NOT NULL,
+        `ayah_number` INTEGER NOT NULL,
+        `text_uthmani` TEXT NOT NULL,
+        `translation_id` TEXT NOT NULL,
+        `juz` INTEGER NOT NULL,
+        `page` INTEGER NOT NULL,
+        `manzil` INTEGER NOT NULL,
+        `sajdah` INTEGER NOT NULL,
+        FOREIGN KEY(`surah_id`) REFERENCES `surah`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
     );
     """)
-
-    cur.execute("CREATE INDEX idx_ayah_surah ON ayah(surah_id);")
-    cur.execute("CREATE INDEX idx_ayah_juz ON ayah(juz);")
-    cur.execute("CREATE INDEX idx_ayah_page ON ayah(page);")
+    cur.execute("CREATE INDEX IF NOT EXISTS `idx_ayah_surah` ON `ayah` (`surah_id`);")
+    cur.execute("CREATE INDEX IF NOT EXISTS `idx_ayah_juz` ON `ayah` (`juz`);")
+    cur.execute("CREATE INDEX IF NOT EXISTS `idx_ayah_page` ON `ayah` (`page`);")
 
     # 3. TABEL ASMAUL HUSNA
     cur.execute("""
-    CREATE TABLE asmaul_husna (
-        id INTEGER PRIMARY KEY,
-        number INTEGER NOT NULL UNIQUE,
-        arabic TEXT NOT NULL,
-        latin TEXT NOT NULL,
-        translation_id TEXT NOT NULL,
-        meaning_detail TEXT NOT NULL
+    CREATE TABLE IF NOT EXISTS `asmaul_husna` (
+        `id` INTEGER NOT NULL,
+        `number` INTEGER NOT NULL,
+        `arabic` TEXT NOT NULL,
+        `latin` TEXT NOT NULL,
+        `translation_id` TEXT NOT NULL,
+        `meaning_detail` TEXT NOT NULL,
+        PRIMARY KEY(`id`)
     );
     """)
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS `index_asmaul_husna_number` ON `asmaul_husna` (`number`);")
 
     # 4. TABEL KUMPULAN DOA
     cur.execute("""
-    CREATE TABLE doa (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        category TEXT NOT NULL,
-        title TEXT NOT NULL,
-        arabic TEXT NOT NULL,
-        transliteration TEXT NOT NULL,
-        translation_id TEXT NOT NULL,
-        reference TEXT NOT NULL
+    CREATE TABLE IF NOT EXISTS `doa` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `category` TEXT NOT NULL,
+        `title` TEXT NOT NULL,
+        `arabic` TEXT NOT NULL,
+        `transliteration` TEXT NOT NULL,
+        `translation_id` TEXT NOT NULL,
+        `reference` TEXT NOT NULL
     );
     """)
-
-    cur.execute("CREATE INDEX idx_doa_category ON doa(category);")
+    cur.execute("CREATE INDEX IF NOT EXISTS `idx_doa_category` ON `doa` (`category`);")
 
     # 5. TABEL RECITER & AUDIO METADATA
     cur.execute("""
-    CREATE TABLE reciter (
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        subfolder_path TEXT NOT NULL
+    CREATE TABLE IF NOT EXISTS `reciter` (
+        `id` INTEGER NOT NULL,
+        `name` TEXT NOT NULL,
+        `subfolder_path` TEXT NOT NULL,
+        PRIMARY KEY(`id`)
     );
     """)
 
     cur.execute("""
-    CREATE TABLE audio_metadata (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ayah_id INTEGER NOT NULL,
-        reciter_id INTEGER NOT NULL,
-        remote_url TEXT NOT NULL,
-        local_path TEXT,
-        duration_ms INTEGER DEFAULT 0,
-        file_size_bytes INTEGER DEFAULT 0,
-        download_status INTEGER DEFAULT 0,
-        FOREIGN KEY(ayah_id) REFERENCES ayah(id),
-        FOREIGN KEY(reciter_id) REFERENCES reciter(id)
+    CREATE TABLE IF NOT EXISTS `audio_metadata` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `ayah_id` INTEGER NOT NULL,
+        `reciter_id` INTEGER NOT NULL,
+        `remote_url` TEXT NOT NULL,
+        `local_path` TEXT,
+        `duration_ms` INTEGER NOT NULL,
+        `file_size_bytes` INTEGER NOT NULL,
+        `download_status` INTEGER NOT NULL,
+        FOREIGN KEY(`ayah_id`) REFERENCES `ayah`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+        FOREIGN KEY(`reciter_id`) REFERENCES `reciter`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
     );
     """)
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS `idx_audio_ayah_reciter` ON `audio_metadata` (`ayah_id`, `reciter_id`);")
 
-    cur.execute("CREATE UNIQUE INDEX idx_audio_ayah_reciter ON audio_metadata(ayah_id, reciter_id);")
+    # 6. ROOM MASTER TABLE (Crucial: provides expected identity_hash so Room validates schema without errors)
+    cur.execute("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY, identity_hash TEXT);")
+    cur.execute("INSERT OR REPLACE INTO room_master_table (id, identity_hash) VALUES (42, 'c4ee85f7096495f27d885840991fa3e6');")
 
     # Parse data sources
     surahs_meta, juzs_meta, pages_meta, manzils_meta, sajdas_meta = parse_metadata()

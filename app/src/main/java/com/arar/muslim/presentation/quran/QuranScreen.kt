@@ -21,6 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.arar.muslim.R
 import com.arar.muslim.core.theme.IslamicGold
 import com.arar.muslim.core.theme.IslamicGreenPrimary
 import com.arar.muslim.core.theme.QuranFontFamily
@@ -64,25 +67,29 @@ fun QuranScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = "ArAr Muslim",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = IslamicGold
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_arar_emblem),
+                            contentDescription = "ArAr Muslim Logo",
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(8.dp))
                         )
-                        Text(
-                            text = "Al-Qur'anul Karim (100% Offline)",
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "ArAr Muslim",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = IslamicGold
+                            )
+                            Text(
+                                text = "Al-Qur'anul Karim (100% Offline)",
+                                fontSize = 12.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                        }
                     }
-                    Icon(
-                        imageVector = Icons.Default.MenuBook,
-                        contentDescription = "Quran",
-                        tint = IslamicGold,
-                        modifier = Modifier.size(28.dp)
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))

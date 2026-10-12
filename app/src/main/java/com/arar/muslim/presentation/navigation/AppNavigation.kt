@@ -1,6 +1,8 @@
 package com.arar.muslim.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Explore
@@ -31,16 +33,22 @@ import com.arar.muslim.presentation.quran.AyahViewerScreen
 import com.arar.muslim.presentation.quran.QuranScreen
 import com.arar.muslim.presentation.quran.QuranViewModel
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.arar.muslim.R
+
 sealed class Screen(
     val route: String,
     val title: String,
     val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector
+    val unselectedIcon: ImageVector,
+    @DrawableRes val iconRes: Int? = null
 ) {
-    object Quran : Screen("quran", "Al-Qur'an", Icons.Filled.MenuBook, Icons.Outlined.MenuBook)
-    object Qibla : Screen("qibla", "Kiblat", Icons.Filled.Explore, Icons.Outlined.Explore)
-    object Dzikir : Screen("dzikir", "Dzikir", Icons.Filled.AutoStories, Icons.Outlined.AutoStories)
-    object AsmaulHusna : Screen("asmaul_husna", "99 Asma", Icons.Filled.FormatListNumbered, Icons.Outlined.FormatListNumbered)
+    object Quran : Screen("quran", "Al-Qur'an", Icons.Filled.MenuBook, Icons.Outlined.MenuBook, R.drawable.ic_nav_quran)
+    object Qibla : Screen("qibla", "Kiblat", Icons.Filled.Explore, Icons.Outlined.Explore, R.drawable.ic_nav_qibla)
+    object Dzikir : Screen("dzikir", "Dzikir", Icons.Filled.AutoStories, Icons.Outlined.AutoStories, R.drawable.ic_nav_doa)
+    object AsmaulHusna : Screen("asmaul_husna", "99 Asma", Icons.Filled.FormatListNumbered, Icons.Outlined.FormatListNumbered, R.drawable.ic_nav_asmaulhusna)
 }
 
 @Composable
@@ -76,10 +84,18 @@ fun AppNavigation(
                         val selected = currentRoute == screen.route
                         NavigationBarItem(
                             icon = {
-                                Icon(
-                                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
-                                    contentDescription = screen.title
-                                )
+                                if (screen.iconRes != null) {
+                                    Image(
+                                        painter = painterResource(id = screen.iconRes),
+                                        contentDescription = screen.title,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+                                        contentDescription = screen.title
+                                    )
+                                }
                             },
                             label = { Text(screen.title) },
                             selected = selected,
