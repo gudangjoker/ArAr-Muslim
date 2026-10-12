@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Red North Arrow -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M50.03,5 A2.516,2.516 0,0 0,47.6 6.76 L34.493,48.548 A2.51,2.51 0,0 0,34.121,50.002 L50,50 L50,5 Z" />
+    <path
+        android:fillColor="#C62828"
+        android:pathData="M50.03,5 A2.513,2.513 0,0 1,52.401,6.76 L65.508,48.548 A2.513,2.513 0,0 1,65.88,49.998 L50,50 L50,5 Z" />
+    <!-- Silver/Dark South Arrow -->
+    <path
+        android:fillColor="#78909C"
+        android:pathData="M50,50 L34.121,50.002 A2.51,2.51 0,0 0,34.493,51.454 L47.598,93.236 C48.335,95.588 50,95.588 50,93.236 L50,50 Z" />
+    <path
+        android:fillColor="#546E7A"
+        android:pathData="M50,50 L65.88,49.998 A2.51,2.51 0,0 1,65.508,51.45 L52.402,93.236 C51.665,95.588 50,95.588 50,93.236 L50,50 Z" />
+    <!-- Center Pivot Circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,45 C47.24,45 45,47.24 45,50 C45,52.76 47.24,55 50,55 C52.76,55 55,52.76 55,50 C55,47.24 52.76,45 50,45 Z" />
+    <path
+        android:fillColor="#37474F"
+        android:pathData="M50,47 C48.34,47 47,48.34 47,50 C47,51.66 48.34,53 50,53 C51.66,53 53,51.66 53,50 C53,48.34 51.66,47 50,47 Z" />
+</vector>

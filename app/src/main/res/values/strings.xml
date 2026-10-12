@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ArAr Muslim</string>
+    <string name="quran">Al-Qur\'an</string>
+    <string name="qibla">Kiblat</string>
+    <string name="asmaul_husna">Asmaul Husna</string>
+    <string name="doa">Doa &amp; Dzikir</string>
+</resources>
